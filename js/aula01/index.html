@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Mudar Background</title>
+</head>
+<body>
+    <button onclick="mudarCor()">Mudar Cor de Fundo</button>
+    
+    <button onclick="listaFrutas()">Sortear Frutas</button>
+
+    <h1 id="lista"></h1>
+    
+    <script >
+
+        function mudarCor() {
+            var r = Math.floor(Math.random() * 1000)
+            
+            while (r > 255 ||g > 255 || b > 255) {
+                r = Math.floor(Math.random() * 1000)
+                }   
+                var g = Math.floor(Math.random() * 1000)
+                
+                var b = Math.floor(Math.random() * 1000)
+                
+                const cor = `rgb(${r}, ${g}, ${b})`;
+                document.body.style.backgroundColor = cor
+                /*
+            const cor = "#" + Math.floor(Math.random() * 16777216).toString(16);
+            document.body.style.backgroundColor = cor;
+            */
+        }
+
+        function listaFrutas() {
+            var frutas = ["Maçã", "Banana", "Laranja", "Uva", "Morango"]
+            const lista = Math.floor(Math.random() * frutas.length)
+
+            document.getElementById("lista").innerHTML = frutas[lista]
+}
+    </script>
+</body>
+</html>

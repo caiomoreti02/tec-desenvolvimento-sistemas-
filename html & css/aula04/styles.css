@@ -1,0 +1,38 @@
+body {
+    background-color: hsl(305, 100, 50);
+
+}
+
+ul {
+    background-color: #000000;
+    padding: 10px;
+    align-items: center;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #5e4caf;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    align-items: center;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: bold;
+    font-size: 20px;
+    font-style: oblique;
+    
+}
+
+button:hover {
+    background-color: hsl(0, 100%, 50%);
+}
+
+a {
+    color: rgb(0, 0, 0);
+    text-decoration: solid;
+    align-items: center;
+}
