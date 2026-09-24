@@ -1,0 +1,40 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: rgb(244, 121, 6);
+    border: 3px solid rgb(255, 0, 0);
+
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    
+}
+
+#item1{
+    background-color: rgba(223, 6, 6, 0.795);
+    height: 150px;
+    width: 150px;
+    font-size: 30px;
+
+}
+#item2{
+    background-color: rgba(6, 223, 6, 0.795);
+    height: 150px;
+    width: 150px;
+    font-size: 30px;
+
+}
+#item3{
+    background-color: rgba(6, 6, 223, 0.795);
+    height: 150px;
+    width: 150px;
+    font-size: 30px;
+}
