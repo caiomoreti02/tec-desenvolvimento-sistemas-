@@ -22,31 +22,51 @@ export async function postEquip(body) {
 }
 
 export async function deleteEquipService(id) {
-    equips = equips.filter(equip => equip.id !== id)
+    await db.query(
+        "DELETE FROM equipamentos WHERE id = ?",
+        [id]
+    )
 
     return "Equip deleted!"
 }
 
-export async function putEquipService(id, body){
-    const index = equips.findIndex(equip => equip.id === id)
-
+export async function putEquipService(id, body) {
+    const { nome, categoria, numeroDeSerie, status } = body
+    
     if(index === -1) {
-        response.code(404).send({ message: "User not found!" })
+        response.code(404).send({ message: "Equip not found!" })
     }
 
-    equips[index] = body
+    await db.query(
+        `UPDATE equipamentos
+        SET nome = ?, categoria = ?, numeroDeSerie = ?, status = ?
+        WHERE id = ?`,
+        [nome, categoria, numeroDeSerie, status, id]
+    )
 
     return "Equip updated!"
 }
 
-export async function patchEquipService(id, body){
-    const index = equips.findIndex(equip => equip.id === id)
+export async function patchEquipService(id, body) {
+    const equip = await getEquipById(id)
 
-    if(index === -1) {
-        response.code(404).send({ message: "User not found!" })
+    if (!equip) {
+        return false
     }
 
-    equips[index] = {  ...equips[index], ...body }
+    const updatedEquip = {
+        ...equip,
+        ...body
+    }
+
+    const { nome, categoria, numeroDeSerie, status } = updatedEquip
+
+    await db.query(
+        `UPDATE equipamentos
+        SET nome = ?, categoria = ?, numeroDeSerie = ?, status = ?
+        WHERE id = ?`,
+        [nome, categoria, numeroDeSerie, status, id]
+    )
 
     return "Equip updated!"
 }
