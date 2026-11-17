@@ -18,6 +18,9 @@ CREATE TABLE equipamentos (
 
     Insira o comando a seguir para iniciar um projeto node: npm init -y
 
+    Entrar no package.json e alterar "type" para "module"
+    Adicionar ',' depois de "test" e acrescentar: "dev": "node --watch server.js"
+
    Instalar as bibliotecas que iremos utilizar com o comando: npm install fastify uuid dotenv mysql2 @fastify/cors
 
     
