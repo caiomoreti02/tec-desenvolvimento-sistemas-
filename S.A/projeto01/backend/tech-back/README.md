@@ -16,4 +16,6 @@ CREATE TABLE equipamentos (
 
     SELECT * FROM equipamentos;
 
+   Instalar as bibliotecas que iremos utilizar com o comando: npm install fastify uuid dotenv mysql2 @fastify/cors
+
     
