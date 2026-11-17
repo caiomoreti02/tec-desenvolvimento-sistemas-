@@ -33,16 +33,17 @@ export async function deleteEquipService(id) {
 export async function putEquipService(id, body) {
     const { nome, categoria, numeroDeSerie, status } = body
     
-    if(index === -1) {
-        response.code(404).send({ message: "Equip not found!" })
-    }
-
-    await db.query(
+    
+    const dbResult = await db.query(
         `UPDATE equipamentos
         SET nome = ?, categoria = ?, numeroDeSerie = ?, status = ?
         WHERE id = ?`,
         [nome, categoria, numeroDeSerie, status, id]
     )
+    
+    if (dbResult.affectedRows === 0) {
+        return false ("Equip not found!")
+    }
 
     return "Equip updated!"
 }
@@ -59,13 +60,13 @@ export async function patchEquipService(id, body) {
         ...body
     }
 
-    const { nome, categoria, numeroDeSerie, status } = updatedEquip
+    const { nome, categoria, status } = updatedEquip
 
     await db.query(
         `UPDATE equipamentos
-        SET nome = ?, categoria = ?, numeroDeSerie = ?, status = ?
+        SET nome = ?, categoria = ?, status = ?
         WHERE id = ?`,
-        [nome, categoria, numeroDeSerie, status, id]
+        [nome, categoria, status, id]
     )
 
     return "Equip updated!"
