@@ -1,10 +1,27 @@
 import { v4 } from "uuid"
 import { db } from "../database/connection.js"
 
-export async function getAllEquip() {
-    const [ equips ] = await db.query("SELECT * FROM equipamentos")
+export async function getAllEquips(page, limit) {
+    const offset = (page - 1) * limit
 
-    return equips
+    const [equips] = await db.query(
+        'SELECT * FROM equipamentos LIMIT ? OFFSET ?',
+        [limit, offset]
+    )
+
+    const [total] = await db.query(
+        'SELECT COUNT(*) AS total FROM equipamentos'
+    )
+
+    const totalItems = total[0].total
+    const totalPages = Math.ceil(totalItems / limit)
+
+    return {
+        equips,
+        totalItems,
+        totalPages,
+        currentPage: page
+    }
 }
 
 export async function getEquipById(id) {

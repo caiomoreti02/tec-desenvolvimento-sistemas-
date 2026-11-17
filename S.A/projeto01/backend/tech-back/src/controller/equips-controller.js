@@ -1,10 +1,13 @@
-import { deleteEquipService, getAllEquip, getEquipById, patchEquipService, postEquip, putEquipService } from "../services/equips-services.js"
+import { deleteEquipService, getAllEquips, getEquipById, patchEquipService, postEquip, putEquipService } from "../services/equips-services.js"
 
 
-export async function listAllEquip(request, response){
-    const equips = await getAllEquip()
+export async function listAllEquips(request, reply) {
+    const page = Math.max(1, Number(request.query.page) || 1)
+    const limit = Math.min(100, Math.max(1, Number(request.query.limit) || 10))
 
-    return response.code(200).send(equips)
+    const result = await getAllEquips(page, limit)
+
+    return reply.send(result)
 }
 
 export async function listEquipById(request, response){

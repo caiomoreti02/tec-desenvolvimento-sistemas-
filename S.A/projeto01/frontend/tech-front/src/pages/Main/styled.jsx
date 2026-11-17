@@ -1,4 +1,3 @@
-
 import styled from 'styled-components'
 
 export const MainContainer = styled.div`
@@ -20,7 +19,6 @@ export const MainContainer = styled.div`
         margin: 0;
     }
 `
-
 export const RegisterSection = styled.div`
     background-color: #f0efff;
     padding: 16px;
@@ -73,7 +71,6 @@ export const RegisterSection = styled.div`
 
     
 `
-
 export const ListSection = styled.div`
     background-color: #f0efff;
     padding: 16px;
@@ -110,29 +107,31 @@ export const ListSection = styled.div`
     td {
         padding: 12px;
         border-bottom: 1px solid #d0cdea;
+        
     }
 
     tbody tr:hover {
         background-color: #dedcff;
     }
 
-    
-`
 
+`
 export const ActionButton = styled.button`
     background-color: ${props => props.delete ? '#ff4d4d' : '#8000bd'};
     color: white;
     border: none;
     border-radius: 5px;
-    padding: 10px 16px;
+    padding: 10px 10px;
     cursor: pointer; 
+    margin-bottom: 3px;
 
+    
     button {
         background-color: ${props => props.$delete ? '#ff4d4d' : '#8000bd'};;
         color: white;
         border: none;
         border-radius: 5px;
-        padding: 10px 16px;
+        padding: 10px 10px;
         cursor: pointer;
     }
 
@@ -141,8 +140,6 @@ export const ActionButton = styled.button`
     }
     
 `
-
-
 export const ModalOverlay = styled.div`
     position: fixed;
     inset: 0;
@@ -218,4 +215,39 @@ export const ModalActions = styled.div`
         background-color: #777;
     }
 `
+export const Pagination = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 25px;
+    padding: 15px;
 
+    span {
+        font-size: 16px;
+        font-weight: bold;
+        color: #4b287a;
+    }
+
+    button {
+        background-color: #8000bd;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+
+    button:hover:not(:disabled) {
+        background-color: #5e008c;
+        transform: scale(1.05);
+    }
+
+    button:disabled {
+        background-color: #b9a1c7;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+`

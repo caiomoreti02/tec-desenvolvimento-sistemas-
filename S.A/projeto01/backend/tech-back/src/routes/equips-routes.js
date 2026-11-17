@@ -1,9 +1,9 @@
 import { v4 } from 'uuid'
-import { createEquip, deleteEquip, listAllEquip, listEquipById, patchEquip, putEquip } from '../controller/equips-controller.js'
+import { createEquip, deleteEquip, listAllEquips, listEquipById, patchEquip, putEquip } from '../controller/equips-controller.js'
 
 export async function equipRoutes(app) {
     
-    app.get('/', listAllEquip)
+    app.get('/', listAllEquips)
     
     app.get('/:id', listEquipById)
     

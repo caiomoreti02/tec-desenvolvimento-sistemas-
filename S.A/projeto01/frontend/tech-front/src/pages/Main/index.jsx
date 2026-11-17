@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
-import {ListSection,MainContainer,RegisterSection,ModalOverlay,ModalContent,ModalActions,ActionButton} from "./styled"
+import { ListSection, MainContainer, RegisterSection, ModalOverlay, ModalContent, ModalActions, ActionButton, Pagination } from "./styled"
 
 export function Main() {
 
@@ -16,14 +16,22 @@ export function Main() {
     const [editingId, setEditingId] = useState(null)
     const [showModal, setShowModal] = useState(false)
 
+    const [pagina, setPagina] = useState(1)
+    const [totalPages, setTotalPages] = useState(0)
+
     const fetchEquips = async () => {
         try {
-            const response = await axios.get(
-                "http://localhost:3000/equips/"
-            )
+            const response = await axios.get("http://localhost:3000/equips", {
+                params: {
+                    page: pagina,
+                    limit: 10
+                }
+            })
 
-            setEquips(response.data)
+            console.log("Resposta da API:", response.data)
 
+            setEquips(response.data.equips)
+            setTotalPages(response.data.totalPages)
         } catch (error) {
             console.error("Erro ao buscar equipamentos:", error)
         }
@@ -110,7 +118,7 @@ export function Main() {
     }
     useEffect(() => {
         fetchEquips()
-    }, [])
+    }, [pagina])
 
     return (
         <MainContainer>
@@ -174,7 +182,17 @@ export function Main() {
                                 <td>{equip.nome}</td>
                                 <td>{equip.categoria}</td>
                                 <td>{equip.status}</td>
-                                <td>{equip.dataDeAquisicao}</td>
+                                <td>
+                                    {new Date(equip.dataDeAquisicao.replace(' ', 'T'))
+                                        .toLocaleString('pt-BR', {
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                            year: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            hour12: false
+                                        })}
+                                </td>
                                 <td>{equip.numeroDeSerie}</td>
                                 <td>
                                     <ActionButton
@@ -193,6 +211,23 @@ export function Main() {
                         ))}
                     </tbody>
                 </table>
+                <Pagination>
+                    <button
+                        onClick={() => setPagina(pagina - 1)}
+                        disabled={pagina <= 1}
+                    >
+                        Anterior
+                    </button>
+                    <span>
+                        Página {pagina} de {totalPages}
+                    </span>
+                    <button
+                        onClick={() => setPagina(pagina + 1)}
+                        disabled={pagina >= totalPages || totalPages === 0}
+                    >
+                        Próxima
+                    </button>
+                </Pagination>
             </ListSection>
             {showModal && (
                 <ModalOverlay>
