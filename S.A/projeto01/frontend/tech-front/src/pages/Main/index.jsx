@@ -16,6 +16,7 @@ export function Main() {
     const [editingId, setEditingId] = useState(null)
     const [showModal, setShowModal] = useState(false)
 
+    const [busca, setBusca] = useState("")
     const [pagina, setPagina] = useState(1)
     const [totalPages, setTotalPages] = useState(0)
 
@@ -24,14 +25,14 @@ export function Main() {
             const response = await axios.get("http://localhost:3000/equips", {
                 params: {
                     page: pagina,
-                    limit: 10
+                    limit: 10,
+                    busca: busca
                 }
             })
 
-            console.log("Resposta da API:", response.data)
-
             setEquips(response.data.equips)
             setTotalPages(response.data.totalPages)
+
         } catch (error) {
             console.error("Erro ao buscar equipamentos:", error)
         }
@@ -44,6 +45,19 @@ export function Main() {
             [name]: value
         }))
     }
+
+    const handleNew = () => {
+        setFormData({
+            nome: "",
+            categoria: "",
+            status: "",
+            numeroDeSerie: "",
+        })
+
+        setEditingId(null)
+        setShowModal(true)
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
 
@@ -65,6 +79,9 @@ export function Main() {
                     formData
                 )
             }
+
+            setShowModal(false)
+            setEditingId(null)
 
             setFormData({
                 nome: "",
@@ -99,7 +116,10 @@ export function Main() {
             nome: equip.nome,
             categoria: equip.categoria,
             status: equip.status,
-            numeroDeSerie: equip.numeroDeSerie
+            numeroDeSerie: equip.numeroDeSerie,
+            dataDeAquisicao: equip.dataDeAquisicao
+                ? equip.dataDeAquisicao.slice(0, 10)
+                : ""
         })
 
         setEditingId(equip.id)
@@ -113,61 +133,49 @@ export function Main() {
             nome: "",
             categoria: "",
             status: "",
-            numeroDeSerie: ""
+            numeroDeSerie: "",
         })
     }
+
+    const formatDate = (date) => {
+        if (!date) return ""
+
+        return new Date(date).toLocaleDateString("pt-BR", {
+            timeZone: "UTC"
+        })
+    }
+
     useEffect(() => {
         fetchEquips()
-    }, [pagina])
+    }, [pagina, busca])
 
     return (
         <MainContainer>
             <h1>Sistema de Controle de Equipamentos</h1>
             <RegisterSection>
-                <h2>Cadastro de equipamento</h2>
-                <form onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        placeholder="Nome"
-                        name="nome"
-                        value={formData.nome}
-                        onChange={handleInputChange}
-                        required
-                    />
-                    <input
-                        type="text"
-                        placeholder="Categoria"
-                        name="categoria"
-                        value={formData.categoria}
-                        onChange={handleInputChange}
-                        required
-                    />
-                    <input
-                        type="text"
-                        placeholder="Status"
-                        name="status"
-                        value={formData.status}
-                        onChange={handleInputChange}
-                        required
-                    />
-                    <input
-                        type="text"
-                        placeholder="Número de série"
-                        name="numeroDeSerie"
-                        value={formData.numeroDeSerie}
-                        onChange={handleInputChange}
-                        required
-                    />
-                    <button type="submit">
-                        Cadastrar
-                    </button>
-                </form>
+                <h2>Equipamentos</h2>
+                <input
+                    type="text"
+                    placeholder="Buscar por nome, categoria ou número de série..."
+                    value={busca}
+                    onChange={(e) => {
+                        setBusca(e.target.value)
+                        setPagina(1)
+                    }}
+                />
+                <button
+                    type="button"
+                    onClick={handleNew}
+                >
+                    Cadastrar equipamento
+                </button>
             </RegisterSection>
             <ListSection>
                 <h2>Lista de equipamentos</h2>
                 <table>
                     <thead>
                         <tr>
+                            <th>Id</th>
                             <th>Nome</th>
                             <th>Categoria</th>
                             <th>Status</th>
@@ -177,38 +185,40 @@ export function Main() {
                         </tr>
                     </thead>
                     <tbody>
-                        {equips.map((equip) => (
-                            <tr key={equip.id}>
-                                <td>{equip.nome}</td>
-                                <td>{equip.categoria}</td>
-                                <td>{equip.status}</td>
-                                <td>
-                                    {new Date(equip.dataDeAquisicao.replace(' ', 'T'))
-                                        .toLocaleString('pt-BR', {
-                                            day: '2-digit',
-                                            month: '2-digit',
-                                            year: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                            hour12: false
-                                        })}
-                                </td>
-                                <td>{equip.numeroDeSerie}</td>
-                                <td>
-                                    <ActionButton
-                                        onClick={() => handleEdit(equip)}
-                                    >
-                                        Editar
-                                    </ActionButton>
-                                    <ActionButton
-                                        $delete
-                                        onClick={() => handleDelete(equip.id)}
-                                    >
-                                        Excluir
-                                    </ActionButton>
+                        {equips.length > 0 ? (
+                            equips.map((equip) => (
+                                <tr key={equip.id}>
+                                    <td>{equip.nome}</td>
+                                    <td>{equip.categoria}</td>
+                                    <td>{equip.status}</td>
+                                    <td>
+                                        {formatDate(equip.dataDeAquisicao)}
+                                    </td>
+                                    <td>{equip.numeroDeSerie}</td>
+                                    <td>
+                                        <ActionButton
+                                            type="button"
+                                            onClick={() => handleEdit(equip)}
+                                        >
+                                            Editar
+                                        </ActionButton>
+                                        <ActionButton
+                                            type="button"
+                                            $delete
+                                            onClick={() => handleDelete(equip.id)}
+                                        >
+                                            Excluir
+                                        </ActionButton>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="7">
+                                    Nenhum equipamento encontrado.
                                 </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
                 <Pagination>
@@ -232,16 +242,21 @@ export function Main() {
             {showModal && (
                 <ModalOverlay>
                     <ModalContent>
-                        <h2>Editar equipamento</h2>
+                        <h2>
+                            {editingId !== null
+                                ? "Editar equipamento"
+                                : "Cadastrar equipamento"}
+                        </h2>
                         <form onSubmit={handleSubmit}>
                             <input
                                 type="text"
                                 name="nome"
-                                placeholder="Nome"
+                                placeholder="Nome do equipamento"
                                 value={formData.nome}
                                 onChange={handleInputChange}
                                 required
                             />
+
                             <input
                                 type="text"
                                 name="categoria"
@@ -250,14 +265,7 @@ export function Main() {
                                 onChange={handleInputChange}
                                 required
                             />
-                            <input
-                                type="text"
-                                name="status"
-                                placeholder="Status"
-                                value={formData.status}
-                                onChange={handleInputChange}
-                                required
-                            />
+
                             <input
                                 type="text"
                                 name="numeroDeSerie"
@@ -266,9 +274,30 @@ export function Main() {
                                 onChange={handleInputChange}
                                 required
                             />
+                            <select
+                                name="status"
+                                value={formData.status}
+                                onChange={handleInputChange}
+                                required
+                            >
+                                <option value="">
+                                    Selecione o status
+                                </option>
+                                <option value="Disponível">
+                                    Disponível
+                                </option>
+                                <option value="Em uso">
+                                    Em uso
+                                </option>
+                                <option value="Em manutenção">
+                                    Em manutenção
+                                </option>
+                            </select>
                             <ModalActions>
                                 <button type="submit">
-                                    Salvar alterações
+                                    {editingId !== null
+                                        ? "Salvar alterações"
+                                        : "Cadastrar"}
                                 </button>
                                 <button
                                     type="button"

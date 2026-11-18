@@ -1,16 +1,25 @@
 import { v4 } from "uuid"
 import { db } from "../database/connection.js"
 
-export async function getAllEquips(page, limit) {
+export async function getAllEquips(page, limit, busca = "") {
     const offset = (page - 1) * limit
+    const termo = `%${busca}%`
 
     const [equips] = await db.query(
-        'SELECT * FROM equipamentos LIMIT ? OFFSET ?',
-        [limit, offset]
+        `SELECT * FROM equipamentos
+        WHERE nome LIKE ?
+        OR categoria LIKE ?
+        OR numeroDeSerie LIKE ?
+        LIMIT ? OFFSET ?`,
+        [termo, termo, termo, limit, offset]
     )
 
     const [total] = await db.query(
-        'SELECT COUNT(*) AS total FROM equipamentos'
+        `SELECT COUNT(*) AS total FROM equipamentos
+        WHERE nome LIKE ?
+        OR categoria LIKE ?
+        OR numeroDeSerie LIKE ?`,
+        [termo, termo, termo]
     )
 
     const totalItems = total[0].total
@@ -51,7 +60,7 @@ export async function putEquipService(id, body) {
     const { nome, categoria, numeroDeSerie, status } = body
     
     
-    const dbResult = await db.query(
+    const [dbResult] = await db.query(
         `UPDATE equipamentos
         SET nome = ?, categoria = ?, numeroDeSerie = ?, status = ?
         WHERE id = ?`,
@@ -59,7 +68,7 @@ export async function putEquipService(id, body) {
     )
     
     if (dbResult.affectedRows === 0) {
-        return false ("Equip not found!")
+        return false 
     }
 
     return "Equip updated!"
