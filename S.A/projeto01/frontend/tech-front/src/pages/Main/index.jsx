@@ -175,7 +175,6 @@ export function Main() {
                 <table>
                     <thead>
                         <tr>
-                            <th>Id</th>
                             <th>Nome</th>
                             <th>Categoria</th>
                             <th>Status</th>

@@ -125,7 +125,6 @@ export const ActionButton = styled.button`
     cursor: pointer; 
     margin-bottom: 3px;
 
-    
     button {
         background-color: ${props => props.$delete ? '#ff4d4d' : '#8000bd'};;
         color: white;
